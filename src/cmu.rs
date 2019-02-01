@@ -70,10 +70,8 @@ impl I2C0Clk {
     }
 }
 
-
 macro_rules! timerclk {
     ($TIMERnClk: ident, $timerN: ident) => {
-
         pub struct $TIMERnClk {
             _private: (),
         }
@@ -87,7 +85,7 @@ macro_rules! timerclk {
                 }
             }
         }
-    }
+    };
 }
 
 timerclk!(TIMER0Clk, timer0);
@@ -105,6 +103,8 @@ impl GPIOClk {
         unsafe {
             let cmu = &*registers::CMU::ptr();
             #[cfg(feature = "chip-efm32gg")]
+            cmu.hfperclken0.modify(|_, w| w.gpio().bit(true));
+            #[cfg(feature = "chip-efm32hg")]
             cmu.hfperclken0.modify(|_, w| w.gpio().bit(true));
             #[cfg(feature = "chip-efr32xg1")]
             cmu.hfbusclken0.modify(|_, w| w.gpio().bit(true));
